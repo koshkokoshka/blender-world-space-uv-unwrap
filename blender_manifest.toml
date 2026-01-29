@@ -1,0 +1,18 @@
+schema_version = "1.0.0"
+
+id = "world_space_uv_unwrap"
+version = "1.0.0"
+name = "World Space UV Unwrap"
+tagline = "Unwrap UVs in world space coordinates"
+maintainer = "Dmitry Prikhodko"
+type = "add-on"
+
+website = "https://github.com/koshkokoshka/blender-world-space-uv-unwrap"
+
+tags = ["UV"]
+
+blender_version_min = "4.2.0"
+
+license = [
+    "SPDX:GPL-3.0-or-later",
+]
