@@ -5,7 +5,7 @@ bl_info = {
     "wiki_url": "https://github.com/koshkokoshka/blender-world-space-uv-unwrap#readme",
     "tracker_url": "https://github.com/koshkokoshka/blender-world-space-uv-unwrap/issues",
     "doc_url": "https://github.com/koshkokoshka/blender-world-space-uv-unwrap#readme",
-    "version": (1, 0, 0),
+    "version": (1, 1, 0),
     "blender": (4, 2, 0),
     "location": "UV > Unwrap",
     "category": "UV",
@@ -37,15 +37,14 @@ class UV_OT_WorldSpaceUnwrap(bpy.types.Operator):
 
     scale: bpy.props.FloatProperty(
         name="Scale",
-        description="UV scaling factor",
+        description="UV tiling scale",
         default=1.0,
         min=0.001,
-        soft_min=0.001,
-        step=25
+        soft_min=0.001
     )
     offset: bpy.props.FloatVectorProperty(
         name="Offset",
-        description="UV offset",
+        description="UV offset in texture space",
         size=2,
         default=(0.0, 0.0)
     )
@@ -55,6 +54,11 @@ class UV_OT_WorldSpaceUnwrap(bpy.types.Operator):
         default=0.0,
         subtype='ANGLE',
         unit='ROTATION'
+    )
+    normalize: bpy.props.BoolProperty(
+        name="Normalize",
+        description="Moves each polygon's UVs into a single tile",
+        default=False
     )
 
     @classmethod
@@ -75,9 +79,9 @@ class UV_OT_WorldSpaceUnwrap(bpy.types.Operator):
             if not face.select:
                 continue  # unwrap only selected faces
 
-            world_normal = matrix_world @ face.normal
-            u_axis, v_axis = planar_axes(world_normal)
+            u_axis, v_axis = planar_axes(face.normal)
 
+            # World to UV
             for loop in face.loops:
                 world_pos = matrix_world @ loop.vert.co
 
@@ -97,6 +101,30 @@ class UV_OT_WorldSpaceUnwrap(bpy.types.Operator):
                 v = v_rot + self.offset[1]
 
                 loop[uv_layer].uv = (u, v)
+
+            # (Optional) 2'nd pass: normalize UVs
+            if self.normalize:
+
+                min_u = min_v = float(' inf')
+                max_u = max_v = float('-inf')
+                for loop in face.loops:
+                    u, v = loop[uv_layer].uv
+                    if u < min_u: min_u = u
+                    if v < min_v: min_v = v
+                    if u > max_u: max_u = u
+                    if v > max_v: max_v = v
+
+                origin_u = round((min_u + max_u) * 0.5 - 0.5)
+                origin_v = round((min_v + max_v) * 0.5 - 0.5)
+
+                for loop in face.loops:
+                    u, v = loop[uv_layer].uv
+
+                    # Normalize
+                    u -= origin_u
+                    v -= origin_v
+
+                    loop[uv_layer].uv = (u, v)
 
         bmesh.update_edit_mesh(mesh)
         return {'FINISHED'}
