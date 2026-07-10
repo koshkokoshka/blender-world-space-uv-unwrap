@@ -16,7 +16,8 @@ It is intended for **brush-based / BSP-style level geometry**, making it easy to
 2. Select the mesh faces you want to unwrap
 3. Use `UV -> Unwrap World Space`
 
-![screenshot](https://github.com/user-attachments/assets/f87b9afa-399c-4ede-86b5-53bd02fd708f)
+![screenshot_1](https://github.com/user-attachments/assets/f87b9afa-399c-4ede-86b5-53bd02fd708f)
+![screenshot_2](https://github.com/user-attachments/assets/ab801661-e984-40ab-bb55-1119a7076f16)
 
 UVs will be generated immediately using world-space coordinates.
 You can adjust **scale**, **offset**, and **rotation** in the operator panel (bottom-left).
