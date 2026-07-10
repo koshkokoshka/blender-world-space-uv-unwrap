@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "world_space_uv_unwrap"
-version = "1.1.0"
+version = "1.2.0"
 name = "World Space UV Unwrap"
 tagline = "Unwrap UVs in world space coordinates"
 maintainer = "Dmitry Prikhodko"
